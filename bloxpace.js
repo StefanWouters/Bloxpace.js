@@ -230,8 +230,8 @@ class Board{
 	}
 
 	FitsOnBoard(shape){
-		for (let yy = 0; yy < 8 - shape.Height; yy++){	
-			for (let xx = 0; xx < 8 - shape.Width; xx++){
+		for (let yy = 0; yy < 8 - (shape.Height - 1); yy++){	
+			for (let xx = 0; xx < 8 - (shape.Width - 1); xx++){
 				if (this.Fits(shape, xx, yy)) return true;
 			}	
 		}
