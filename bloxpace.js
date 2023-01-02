@@ -184,8 +184,8 @@ class Board{
 
 		let score = 0;
 		while (lines.length > 0 && cols.length > 0) {
-			lines.slice(1);
-			cols.slice(1);
+			lines = lines.slice(1);
+			cols = cols.slice(1);
 			score += 25;
 		}
 		score += lines.length * 8;
