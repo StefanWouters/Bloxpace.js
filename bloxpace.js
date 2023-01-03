@@ -153,7 +153,7 @@ class Board{
 	}
 
 	CheckScore(){
-		const lines = [], cols = [];
+		let lines = [], cols = [];
 		for (let yy = 0; yy < 8; yy++){
 			let total = 0;
 			for (let xx = 0; xx < 8; xx++){
@@ -373,7 +373,7 @@ class Shape{
 	 * Set a random shape.
 	 */
 	SetShape(){
-		switch(Random.Next(0, 11)){
+		switch(Random.Next(0, 12)){
 			case 0:
 				this._shape = [
 					1,
@@ -459,6 +459,14 @@ class Shape{
 				this._height = 1;
 				this._width = 4;
 				break;
+			case 11:
+				this._shape = [
+					1,1,
+					1,1,
+				];
+				this._height = 2;
+				this._width = 2;
+				break;
 		}
 	}
 
@@ -482,11 +490,13 @@ const shapes = [
 const shapeHover = new Array(3);
 
 let gameOver = false;
-let score = 0;
+let score = 0, displayScore = 0;
 let selectedShape = -1;
 let boardHoverX = -1, boardHoverY = -1;
 
 setInterval(() => {
+	if (displayScore < score) displayScore++;
+
 	const fits = [
 		board.FitsOnBoard(shapes[0]),
 		board.FitsOnBoard(shapes[1]),
@@ -559,13 +569,14 @@ setInterval(() => {
 	if (gameOver) {
 		doc.DrawText('Game over!', 132, 100);
 	}
-	doc.DrawText(`Score: ${score}`, 140, 12);
+	doc.DrawText(`Score: ${displayScore}`, 140, 12);
 }, 1000 / 15);
 
 document.onmousedown = (e) => {
 	if (gameOver) {
 		board.Clear();
 		score = 0;
+		displayScore = 0;
 		for (let i = 0; i < 3; i++){
 			shapes[i].New();
 		}
