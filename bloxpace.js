@@ -140,10 +140,53 @@ class Document{
 	}
 }
 
+class Animation{
+	constructor(){
+		this._step = 0;
+		this._blocks = [];
+		for (let i = 0; i < 64; i++){
+			this._blocks[i] = -1;
+		}
+	}
+
+	/**
+	 * @type {number}
+	 */
+	get Step(){
+		return this._step;
+	}
+
+	Handle(){
+		this._step++;
+	}
+
+	Get(x, y){
+		return this._blocks[(y * 8) + x];
+	}
+
+	Set(x, y, colour){
+		this._blocks[(y * 8) + x] = colour;
+	}
+}
+
 class Board{
 	constructor(){
 		this._board = new Array(64);
+		this._animations = [];
 		this.Clear();
+	}
+
+	/**
+	 * Return board animations.
+	 */
+	get Animations(){
+		return (this._animations = this._animations.filter(x => x.Step < 15));
+	}
+
+	Handle(){
+		for (let animation of this.Animations){
+			animation.Handle();
+		}
 	}
 
 	Clear(){
@@ -153,6 +196,8 @@ class Board{
 	}
 
 	CheckScore(){
+		const animation = new Animation();
+
 		let lines = [], cols = [];
 		for (let yy = 0; yy < 8; yy++){
 			let total = 0;
@@ -173,11 +218,13 @@ class Board{
 
 		for (let line of lines){
 			for (let xx = 0; xx < 8; xx++){
+				animation.Set(xx, line, this._board[(line * 8) + xx]);
 				this._board[(line * 8) + xx] = -1;
 			}
 		}
 		for (let col of cols){
 			for (let yy = 0; yy < 8; yy++){
+				animation.Set(col, yy, this._board[(yy * 8) + col]);
 				this._board[(yy * 8) + col] = -1;
 			}
 		}
@@ -190,6 +237,10 @@ class Board{
 		}
 		score += lines.length * 8;
 		score += cols.length * 8;
+
+		if (score > 0){
+			this._animations.push(animation);
+		}
 
 		return score;
 	}
@@ -497,6 +548,8 @@ let boardHoverX = -1, boardHoverY = -1;
 setInterval(() => {
 	if (displayScore < score) displayScore++;
 
+	board.Handle();
+
 	const fits = [
 		board.FitsOnBoard(shapes[0]),
 		board.FitsOnBoard(shapes[1]),
@@ -530,6 +583,18 @@ setInterval(() => {
 				doc.FillRect(boardX + 16 + (18 * xx), boardY + 16 + (18 * yy), 2, 2, '#000');
 			} else {
 				doc.FillRect(boardX + 8 + (18 * xx), boardY + 8 + (18 * yy), 18, 18, board.Get(xx, yy));
+			}
+
+			for (let animation of board.Animations) {
+				if (animation.Get(xx, yy) != -1) {
+					if (animation.Step < 9){
+						doc.FillRect(boardX + 8 + (18 * xx), boardY + 8 + (18 * yy), 18, 18, animation.Get(xx, yy));
+						doc.FillRect(boardX + 8 + (18 * xx), boardY + 8 + (18 * yy), 18, 18, `rgba(255,255,255,0.${animation.Step})`);
+					} else {
+						const alpha = (15 - animation.Step) * 0.2;
+						doc.FillRect(boardX + 8 + (18 * xx), boardY + 8 + (18 * yy), 18, 18, `rgba(255,255,255,${alpha}`);
+					}
+				}
 			}
 		}
 	}
