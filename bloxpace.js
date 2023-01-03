@@ -369,6 +369,9 @@ class Shape{
 		this._shape = shape;
 	}
 
+	/**
+	 * Set a random shape.
+	 */
 	SetShape(){
 		switch(Random.Next(0, 11)){
 			case 0:
@@ -459,6 +462,9 @@ class Shape{
 		}
 	}
 
+	/**
+	 * Set a random shape colour.
+	 */
 	SetColour(){
 		this._colour = ['#f00','#0f0', '#00f', '#f0f', '#0ff', '#ff0'][Random.Next(0, 6)];
 	}
@@ -573,9 +579,9 @@ document.onmousedown = (e) => {
 	} else if (boardHoverX != -1 && boardHoverY != -1) {
 		if (board.Set(shapes[selectedShape], boardHoverX, boardHoverY)) {
 			score += shapes[selectedShape].Value;
-			score += board.CheckScore();
 			shapes[selectedShape].New();
 			selectedShape = -1;
+			score += board.CheckScore();
 		}
 	} else {
 		selectedShape = -1;
