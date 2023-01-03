@@ -95,6 +95,8 @@ class Document{
 	DrawText(text, x, y){
 		let context = this._canvas.getContext('2d');
 		context.font = '10px sans-serif';
+		context.textAlign = 'center';
+		context.textBaseline = 'middle';
 
 		context.strokeStyle = '#000';
 		context.strokeText(text, x + 1, y + 1);
@@ -541,7 +543,7 @@ const shapes = [
 const shapeHover = new Array(3);
 
 let gameOver = false;
-let score = 0, displayScore = 0;
+let highScore = 0, score = 0, displayScore = 0;
 let selectedShape = -1;
 let boardHoverX = -1, boardHoverY = -1;
 
@@ -632,9 +634,9 @@ setInterval(() => {
 	}
 
 	if (gameOver) {
-		doc.DrawText('Game over!', 132, 100);
+		doc.DrawText('Game over!', 159, 99);
 	}
-	doc.DrawText(`Score: ${displayScore}`, 140, 12);
+	doc.DrawText(`Score: ${displayScore}`, 159, 10);
 }, 1000 / 15);
 
 document.onmousedown = (e) => {
